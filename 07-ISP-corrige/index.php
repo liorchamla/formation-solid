@@ -1,7 +1,6 @@
 <?php
 
 use Reporting\Format\JsonFormatter;
-use Reporting\Format\HtmlFormatter;
 
 /**
  * 
@@ -37,29 +36,35 @@ use Reporting\Format\HtmlFormatter;
  * L'avantage c'est que si un jour on invente une machine à café qui fait aussi la vaisselle, la classe pourra
  * tout à fait implémenter les deux interfaces :-)
  * 
- * ENONCE DE L'EXERCICE :
- * ----------------------
- * Notre cher collègue qui n'en rate pas une s'est mis en tête que ce serait bien que les formatters puissent 
- * désormais aussi aller dans l'autre sens ! Partir d'une chaine de caractère pour recréer un Report.
  * 
- * Il a donc ajouté une méthode dans l'interface FormatterInterface qui s'appelle `deserialize(string $input): Report` qui reçoit une chaine de caractère et qui renvoie une instance de la classe Report.
  * 
- * Le problème c'est que tous les formatters implémentent cette interface, et il a donc du implémenter cette
- * nouvelle méthode dans tous les formatters. Si cela a du sens pour le JsonFormatter qui peut tout à fait
- * transformer un Report en JSON et du JSON en un Report, ça n'a AUCUN SENS pour le HtmlFormatter ou pour
- * le CsvFormatter !
- * 
- * Il a donc créé des méthodes complètement inutiles dans le HtmlFormatter et dans le CsvFormatter juste pour
- * que PHP ne lui gueule pas dessus vu que la méthode deserialize() est désormais OBLIGATOIRE ...
+ * CORRIGE DE L'EXERCICE
+ * ---------------------
+ * Ce corrigé n'engage que l'auteur de ces lignes, évidemment vous avez peut-être décidé d'une stratégie
+ * tout à fait différente avec votre prof, et c'est ce qui est beau dans le développement : Il n'y a jamais
+ * qu'une seule et même solution à un problème ! :-)
  * 
  * Questions à discuter avec votre prof :
  * --------------------------------------
  * Question 1 : Cela a-t-il du sens d'avoir une fonction qui n'existe que pour émettre une exception ?
+ * => Ce n'est que l'avis du prof qui rédige ces lignes, mais ça me semble COMPLETEMENT DEBILE. Une exception
+ * c'est une situation qui échape à la règle. Or une fonction qui enverrait dans tous les cas une exception, 
+ * ce n'est plus une exception, c'est la règle du coup !
+ * 
  * Question 2 : Peut-on envisager que les classes XXXFormatter aient toutes la méthode format() mais que 
  * seules certaines d'entre elles ne possèdent la méthode deserialize() ?
+ * => Tout à fait, c'est d'ailleurs la solution de cet exercice : on peut très bien avoir une interface
+ * FormatterInterface qui serait implémentée par tous nos Formatters avec la méthode `format()` et UNE AUTRE
+ * INTERFACE DeserializeInterface qui ne serait implémentée que par les Formatters où il fait sens d'avoir 
+ * une méthode `deserialize()` !
  * 
- * Votre mission c'est de faire en sorte que seule la classe JsonFormatter doivent implémenter la méthode `deserialize()` et pas les autres, tout en gardant en tête que les toutes les classes XXXFormatter doivent
- * continuer à implémenter l'interface FormatterInterface !
+ * NOUVELLE STRUCTURE :
+ * --------------------
+ * 1) On a tout simplement créer une nouvelle interface DeserializeInterface qui contient la méthode 
+ * `deserialize()`
+ * 2) On a pu virer cette méthode dans le HtmlFormatter et dans le CsvFormatter
+ * 3) On l'a laissé dans le JsonFormatter puisque ça a du sens et on a bien précisé que le JsonFormatter implémente
+ * désormais 2 interfaces : la FormatterInterface et aussi la DeserializeInterface :-)
  */
 
 /**
@@ -75,7 +80,6 @@ spl_autoload_register(function ($className) {
 
 // On imagine simplement le json suivant
 $json = '{"date":"2016-04-21","title":"Titre de mon rapport"}';
-$html = '<h2>Titre de mon rapport</h2><em>2016-04-21</em>';
 
 // On créé le JsonFormatter
 $jsonFormatter = new JsonFormatter();
@@ -84,10 +88,4 @@ $jsonFormatter = new JsonFormatter();
 $report = $jsonFormatter->deserialize($json);
 
 // Le var_dump() devrait marcher
-var_dump($report);
-
-// On fait pareil avec le Html
-$htmlFormatter = new HtmlFormatter();
-// Evidemment ici ça plante, c'est logique :
-$report = $htmlFormatter->deserialize($html); // Lance une exception ..
 var_dump($report);

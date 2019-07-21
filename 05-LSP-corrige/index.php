@@ -33,23 +33,14 @@ use Office\Tester;
  * 
  * => Vous ne respecteriez pas dans ce cas le principe de substitution de Liskov !
  * 
- * ENONCE DE L'EXERCICE
- * --------------------
- * On sort un peu des formatters (on y retournera, ne vous en faites pas ;-)) pour un truc plus simple !
- * Votre collègue a créé une classe simple Employee qui représente un employé et deux classes enfants Developer
- * et Tester.
+ * CORRIGE DE L'EXERCICE
+ * ----------------------
+ * Bon c'était très con mais en fait notre collègue ne respectait pas le LSP ! Et oui : la classe Tester avait
+ * redéfini la méthode work() de l'employé mais sans respecter son type de retour. Elle renvoyait un array au
+ * lieu d'une simple chaine de caractères ..
  * 
- * Tout content, il se dit qu'il pourrait avoir une fonction faireBosser(Employee $employe) qui recevrait des
- * objets de ces classes en appelant la méthode work() qu'ils ont tous sans avoir de soucis ... 
- * Mais ce n'est pas le cas !
- * 
- * Questions à discuter avec votre prof :
- * --------------------------------------
- * Y'en a pas, c'est ultra simple, par pitié n'y passez pas des heures xD
- * 
- * Votre mission c'est de comprendre pourquoi on a une notice d'erreur lorsqu'on appelle la fonction faireBosser()
- * en lui passant $anne qui est une instance de la classe Tester. Que faut-il faire pour que Anne rentre dans le
- * rang ?!
+ * On lui a donc remonté les bretelles et on lui a montré qu'en corrigeant la méthode work() de la classe Tester,
+ * Anne la testeuse était bien rentrée dans le rang !
  */
 
 /**
@@ -71,7 +62,7 @@ $anne = new Tester("Anne", "Durand");
 // On appelle la même fonction pour chaque employé :
 faireBosser($george);
 faireBosser($julie);
-faireBosser($anne); // Alors ? Pourquoi ça me donne une erreur ?!
+faireBosser($anne);
 
 // On a une fonction qui affiche le boulot de chacun
 function faireBosser(Employee $employe)

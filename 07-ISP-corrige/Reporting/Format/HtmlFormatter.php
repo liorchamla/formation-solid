@@ -21,11 +21,4 @@ class HtmlFormatter implements FormatterInterface
 
         return "<h2>$title</h2><em>$date</em>";
     }
-
-    public function deserialize(string $input): \Reporting\Report
-    {
-        throw new \Exception("Impossible de désérialiser à partir du format HTML");
-        // On retourne un rapport vide juste pour satisfaire le type hinting
-        return new \Reporting\Report('', '');
-    }
 }
